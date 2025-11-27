@@ -89,6 +89,53 @@ export const Web3AuthProvider = ({ children }: { children: any }) => {
 
       console.log('🔌 Kết nối MetaMask...');
 
+      // Check if MetaMask is on Sepolia network
+      const chainId = await (window.ethereum as any).request({
+        method: 'eth_chainId',
+      });
+      
+      const SEPOLIA_CHAIN_ID = '0xaa36a7'; // 11155111 in hex
+      
+      if (chainId !== SEPOLIA_CHAIN_ID) {
+        console.warn(`⚠️  Wrong network detected: ${chainId}. Switching to Sepolia...`);
+        
+        try {
+          // Try to switch to Sepolia
+          await (window.ethereum as any).request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: SEPOLIA_CHAIN_ID }],
+          });
+          console.log('✅ Switched to Sepolia network');
+        } catch (switchError: any) {
+          // This error code indicates that the chain has not been added to MetaMask
+          if (switchError.code === 4902) {
+            try {
+              await (window.ethereum as any).request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainId: SEPOLIA_CHAIN_ID,
+                    chainName: 'Sepolia Testnet',
+                    nativeCurrency: {
+                      name: 'Sepolia ETH',
+                      symbol: 'ETH',
+                      decimals: 18,
+                    },
+                    rpcUrls: ['https://sepolia.infura.io/v3/c25f6035d0984e15a846bb787a238bac'],
+                    blockExplorerUrls: ['https://sepolia.etherscan.io'],
+                  },
+                ],
+              });
+              console.log('✅ Sepolia network added and switched');
+            } catch (addError) {
+              throw new Error('Please add Sepolia network to MetaMask manually');
+            }
+          } else {
+            throw new Error('Please switch to Sepolia network in MetaMask');
+          }
+        }
+      }
+
       // Yêu cầu tài khoản từ MetaMask
       const accounts = await (window.ethereum as any).request({
         method: 'eth_requestAccounts',
@@ -172,8 +219,26 @@ export const Web3AuthProvider = ({ children }: { children: any }) => {
       console.log('✅ Xác thực thành công!');
       console.log(`   Token: ${receivedToken.substring(0, 20)}...`);
       console.log(`   Wallet: ${selectedAccount.toLowerCase()}`);
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Error not known';
+    } catch (err: any) {
+      console.error('❌ Lỗi kết nối:', err);
+      
+      // Handle specific MetaMask errors
+      let errorMsg = 'Đã xảy ra lỗi khi kết nối';
+      
+      if (err.code === 4001) {
+        errorMsg = 'Bạn đã từ chối kết nối MetaMask';
+      } else if (err.code === -32002) {
+        errorMsg = 'MetaMask đã có yêu cầu đang chờ xử lý. Vui lòng mở MetaMask và hoàn tất yêu cầu.';
+      } else if (err.code === -32603) {
+        errorMsg = 'Lỗi RPC. Vui lòng kiểm tra kết nối mạng.';
+      } else if (err.message?.includes('User rejected')) {
+        errorMsg = 'Bạn đã từ chối ký message';
+      } else if (err.message?.includes('switch')) {
+        errorMsg = 'Vui lòng chuyển sang mạng Sepolia trong MetaMask';
+      } else if (err instanceof Error) {
+        errorMsg = err.message;
+      }
+      
       setError(errorMsg);
       setIsAuthenticated(false);
       console.error('❌ Lỗi xác thực:', errorMsg);

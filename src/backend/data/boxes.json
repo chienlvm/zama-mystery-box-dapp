@@ -1,0 +1,38 @@
+[
+  {
+    "id": "bronze",
+    "name": "Bronze Box",
+    "price": 10,
+    "currency": "ZAMA",
+    "rarityPool": ["Common", "Uncommon"],
+    "description": "Common & Uncommon items",
+    "image": "/images/bronze.png",
+    "color": "from-orange-600 to-yellow-600",
+    "glowColor": "shadow-orange-500/50",
+    "tier": 1
+  },
+  {
+    "id": "silver",
+    "name": "Silver Box",
+    "price": 50,
+    "currency": "ZAMA",
+    "rarityPool": ["Uncommon", "Rare", "Epic"],
+    "description": "Uncommon, Rare & Epic items",
+    "image": "/images/silver.png",
+    "color": "from-gray-400 to-gray-200",
+    "glowColor": "shadow-gray-400/50",
+    "tier": 2
+  },
+  {
+    "id": "gold",
+    "name": "Gold Box",
+    "price": 100,
+    "currency": "ZAMA",
+    "rarityPool": ["Rare", "Epic", "Legendary"],
+    "description": "Rare, Epic & Legendary items",
+    "image": "/images/gold.png",
+    "color": "from-yellow-400 to-yellow-200",
+    "glowColor": "shadow-yellow-400/50",
+    "tier": 3
+  }
+]

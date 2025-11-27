@@ -1,0 +1,69 @@
+{
+  "description": "Example NFT data structure returned by nftService.generateNFTForMinting()",
+  "note": "This is what relayer will receive after calling generateNFTForMinting(tokenId, rarityIndex)",
+  
+  "example_output": {
+    "tokenId": 142,
+    "rarity": "Legendary",
+    "name": "Golden Dragon",
+    "type": "Creature",
+    "attributes": {
+      "power": 95,
+      "speed": 88,
+      "element": "Fire"
+    },
+    "metadataURI": "ipfs://bafyreib4pff766vhpbxbhjbqqnsh5aq6owjqvz7xdqfnhb5dqm73c2fvvm/metadata.json",
+    "imageURI": "ipfs://bafybeihqmqddvjq5nw5hbvx7v5j2ghb5xnvjqxz5hx5qmqddvjq5nw5hbv/nft_142.jpg",
+    "ipfsMetadata": {
+      "name": "Golden Dragon #142",
+      "description": "FHE-powered Mystery Box NFT - Legendary rarity item from encrypted loot box",
+      "image": "ipfs://bafybeihqmqddvjq5nw5hbvx7v5j2ghb5xnvjqxz5hx5qmqddvjq5nw5hbv/nft_142.jpg",
+      "attributes": [
+        {
+          "trait_type": "Rarity",
+          "value": "Legendary"
+        },
+        {
+          "trait_type": "Type",
+          "value": "Creature"
+        },
+        {
+          "trait_type": "Power",
+          "value": 95
+        },
+        {
+          "trait_type": "Speed",
+          "value": 88
+        },
+        {
+          "trait_type": "Element",
+          "value": "Fire"
+        }
+      ]
+    }
+  },
+  
+  "usage_in_relayer": {
+    "step1_decrypt": "const clearValue = await kms.publicDecrypt(handle, proof);",
+    "step2_generate_nft": "const nft = await generateNFTForMinting(tokenId, clearValue);",
+    "step3_mint_nft": "const tx = await nftContract.safeMint(buyer, nft.rarity);",
+    "step4_set_uri": "await nftContract.setTokenURI(tokenId, nft.metadataURI);",
+    "step5_save_db": "await database.saveNFT(nft);"
+  },
+  
+  "contract_usage": {
+    "function": "setTokenURI(uint256 tokenId, string memory uri)",
+    "parameters": {
+      "tokenId": 142,
+      "uri": "ipfs://bafyreib4pff766vhpbxbhjbqqnsh5aq6owjqvz7xdqfnhb5dqm73c2fvvm/metadata.json"
+    },
+    "note": "Contract will store this URI on-chain, marketplaces will fetch metadata from IPFS"
+  },
+  
+  "marketplace_display": {
+    "opensea": "https://testnets.opensea.io/assets/sepolia/{NFT_CONTRACT_ADDRESS}/142",
+    "metadata_gateway": "https://nftstorage.link/ipfs/bafyreib4pff766vhpbxbhjbqqnsh5aq6owjqvz7xdqfnhb5dqm73c2fvvm/metadata.json",
+    "image_gateway": "https://nftstorage.link/ipfs/bafybeihqmqddvjq5nw5hbvx7v5j2ghb5xnvjqxz5hx5qmqddvjq5nw5hbv/nft_142.jpg",
+    "note": "OpenSea automatically reads tokenURI() from contract and displays image + attributes"
+  }
+}

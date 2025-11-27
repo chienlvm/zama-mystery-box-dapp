@@ -1,0 +1,602 @@
+[
+  {
+    "id": "NFT_COMMON_001",
+    "name": "Frostbite Dragon",
+    "rarity": "Common",
+    "type": "Creature",
+    "image": "nfts/Common/image_01.jpg",
+    "attributes": {
+      "power": 50,
+      "speed": 55,
+      "element": "Ice"
+    }
+  },
+  {
+    "id": "NFT_COMMON_002",
+    "name": "Ember Hatchling",
+    "rarity": "Common",
+    "type": "Creature",
+    "image": "nfts/Common/image_02.jpg",
+    "attributes": {
+      "power": 48,
+      "speed": 60,
+      "element": "Fire"
+    }
+  },
+  {
+    "id": "NFT_COMMON_003",
+    "name": "Wind Sprite",
+    "rarity": "Common",
+    "type": "Creature",
+    "image": "nfts/Common/image_03.jpg",
+    "attributes": {
+      "power": 45,
+      "speed": 65,
+      "element": "Air"
+    }
+  },
+  {
+    "id": "NFT_COMMON_004",
+    "name": "Stone Turtle",
+    "rarity": "Common",
+    "type": "Creature",
+    "image": "nfts/Common/image_04.jpg",
+    "attributes": {
+      "power": 60,
+      "speed": 40,
+      "element": "Earth"
+    }
+  },
+  {
+    "id": "NFT_COMMON_005",
+    "name": "Water Wisp",
+    "rarity": "Common",
+    "type": "Creature",
+    "image": "nfts/Common/image_05.jpg",
+    "attributes": {
+      "power": 52,
+      "speed": 58,
+      "element": "Water"
+    }
+  },
+  {
+    "id": "NFT_COMMON_006",
+    "name": "Shadow Imp",
+    "rarity": "Common",
+    "type": "Creature",
+    "image": "nfts/Common/image_06.jpg",
+    "attributes": {
+      "power": 53,
+      "speed": 57,
+      "element": "Shadow"
+    }
+  },
+  {
+    "id": "NFT_COMMON_007",
+    "name": "Light Pixie",
+    "rarity": "Common",
+    "type": "Creature",
+    "image": "nfts/Common/image_07.jpg",
+    "attributes": {
+      "power": 49,
+      "speed": 62,
+      "element": "Light"
+    }
+  },
+  {
+    "id": "NFT_COMMON_008",
+    "name": "Thunder Beetle",
+    "rarity": "Common",
+    "type": "Creature",
+    "image": "nfts/Common/image_08.jpg",
+    "attributes": {
+      "power": 51,
+      "speed": 59,
+      "element": "Thunder"
+    }
+  },
+  {
+    "id": "NFT_COMMON_009",
+    "name": "Nature Seedling",
+    "rarity": "Common",
+    "type": "Creature",
+    "image": "nfts/Common/image_09.jpg",
+    "attributes": {
+      "power": 47,
+      "speed": 54,
+      "element": "Nature"
+    }
+  },
+  {
+    "id": "NFT_COMMON_010",
+    "name": "Crystal Slug",
+    "rarity": "Common",
+    "type": "Creature",
+    "image": "nfts/Common/image_10.jpg",
+    "attributes": {
+      "power": 46,
+      "speed": 50,
+      "element": "Crystal"
+    }
+  },
+  {
+    "id": "NFT_UNCOMMON_001",
+    "name": "Shadowveil Dragon",
+    "rarity": "Uncommon",
+    "type": "Creature",
+    "image": "nfts/Uncommon/image_01.jpg",
+    "attributes": {
+      "power": 65,
+      "speed": 70,
+      "element": "Shadow"
+    }
+  },
+  {
+    "id": "NFT_UNCOMMON_002",
+    "name": "Blazewing Griffin",
+    "rarity": "Uncommon",
+    "type": "Creature",
+    "image": "nfts/Uncommon/image_02.jpg",
+    "attributes": {
+      "power": 68,
+      "speed": 72,
+      "element": "Fire"
+    }
+  },
+  {
+    "id": "NFT_UNCOMMON_003",
+    "name": "Frost Wyvern",
+    "rarity": "Uncommon",
+    "type": "Creature",
+    "image": "nfts/Uncommon/image_03.jpg",
+    "attributes": {
+      "power": 66,
+      "speed": 68,
+      "element": "Ice"
+    }
+  },
+  {
+    "id": "NFT_UNCOMMON_004",
+    "name": "Thunder Phoenix",
+    "rarity": "Uncommon",
+    "type": "Creature",
+    "image": "nfts/Uncommon/image_04.jpg",
+    "attributes": {
+      "power": 70,
+      "speed": 75,
+      "element": "Thunder"
+    }
+  },
+  {
+    "id": "NFT_UNCOMMON_005",
+    "name": "Ocean Serpent",
+    "rarity": "Uncommon",
+    "type": "Creature",
+    "image": "nfts/Uncommon/image_05.jpg",
+    "attributes": {
+      "power": 67,
+      "speed": 71,
+      "element": "Water"
+    }
+  },
+  {
+    "id": "NFT_UNCOMMON_006",
+    "name": "Mountain Lion",
+    "rarity": "Uncommon",
+    "type": "Creature",
+    "image": "nfts/Uncommon/image_06.jpg",
+    "attributes": {
+      "power": 69,
+      "speed": 73,
+      "element": "Earth"
+    }
+  },
+  {
+    "id": "NFT_UNCOMMON_007",
+    "name": "Sky Eagle",
+    "rarity": "Uncommon",
+    "type": "Creature",
+    "image": "nfts/Uncommon/image_07.jpg",
+    "attributes": {
+      "power": 64,
+      "speed": 78,
+      "element": "Air"
+    }
+  },
+  {
+    "id": "NFT_UNCOMMON_008",
+    "name": "Lunar Wolf",
+    "rarity": "Uncommon",
+    "type": "Creature",
+    "image": "nfts/Uncommon/image_08.jpg",
+    "attributes": {
+      "power": 71,
+      "speed": 69,
+      "element": "Dark"
+    }
+  },
+  {
+    "id": "NFT_UNCOMMON_009",
+    "name": "Solar Bear",
+    "rarity": "Uncommon",
+    "type": "Creature",
+    "image": "nfts/Uncommon/image_09.jpg",
+    "attributes": {
+      "power": 72,
+      "speed": 66,
+      "element": "Light"
+    }
+  },
+  {
+    "id": "NFT_UNCOMMON_010",
+    "name": "Vine Panther",
+    "rarity": "Uncommon",
+    "type": "Creature",
+    "image": "nfts/Uncommon/image_10.jpg",
+    "attributes": {
+      "power": 68,
+      "speed": 74,
+      "element": "Nature"
+    }
+  },
+  {
+    "id": "NFT_RARE_001",
+    "name": "Flameguard Dragon",
+    "rarity": "Rare",
+    "type": "Creature",
+    "image": "nfts/Rare/image_01.jpg",
+    "attributes": {
+      "power": 80,
+      "speed": 82,
+      "element": "Fire"
+    }
+  },
+  {
+    "id": "NFT_RARE_002",
+    "name": "Glacier Behemoth",
+    "rarity": "Rare",
+    "type": "Creature",
+    "image": "nfts/Rare/image_02.jpg",
+    "attributes": {
+      "power": 85,
+      "speed": 75,
+      "element": "Ice"
+    }
+  },
+  {
+    "id": "NFT_RARE_003",
+    "name": "Storm Leviathan",
+    "rarity": "Rare",
+    "type": "Creature",
+    "image": "nfts/Rare/image_03.jpg",
+    "attributes": {
+      "power": 83,
+      "speed": 80,
+      "element": "Storm"
+    }
+  },
+  {
+    "id": "NFT_RARE_004",
+    "name": "Terra Colossus",
+    "rarity": "Rare",
+    "type": "Creature",
+    "image": "nfts/Rare/image_04.jpg",
+    "attributes": {
+      "power": 90,
+      "speed": 70,
+      "element": "Earth"
+    }
+  },
+  {
+    "id": "NFT_RARE_005",
+    "name": "Abyssal Kraken",
+    "rarity": "Rare",
+    "type": "Creature",
+    "image": "nfts/Rare/image_05.jpg",
+    "attributes": {
+      "power": 82,
+      "speed": 78,
+      "element": "Water"
+    }
+  },
+  {
+    "id": "NFT_RARE_006",
+    "name": "Void Reaper",
+    "rarity": "Rare",
+    "type": "Creature",
+    "image": "nfts/Rare/image_06.jpg",
+    "attributes": {
+      "power": 84,
+      "speed": 81,
+      "element": "Void"
+    }
+  },
+  {
+    "id": "NFT_RARE_007",
+    "name": "Celestial Pegasus",
+    "rarity": "Rare",
+    "type": "Creature",
+    "image": "nfts/Rare/image_07.jpg",
+    "attributes": {
+      "power": 78,
+      "speed": 88,
+      "element": "Holy"
+    }
+  },
+  {
+    "id": "NFT_RARE_008",
+    "name": "Crimson Demon",
+    "rarity": "Rare",
+    "type": "Creature",
+    "image": "nfts/Rare/image_08.jpg",
+    "attributes": {
+      "power": 86,
+      "speed": 79,
+      "element": "Inferno"
+    }
+  },
+  {
+    "id": "NFT_RARE_009",
+    "name": "Ancient Treant",
+    "rarity": "Rare",
+    "type": "Creature",
+    "image": "nfts/Rare/image_09.jpg",
+    "attributes": {
+      "power": 81,
+      "speed": 72,
+      "element": "Nature"
+    }
+  },
+  {
+    "id": "NFT_RARE_010",
+    "name": "Lightning Unicorn",
+    "rarity": "Rare",
+    "type": "Creature",
+    "image": "nfts/Rare/image_10.jpg",
+    "attributes": {
+      "power": 79,
+      "speed": 85,
+      "element": "Thunder"
+    }
+  },
+  {
+    "id": "NFT_EPIC_001",
+    "name": "Earthbound Dragon",
+    "rarity": "Epic",
+    "type": "Creature",
+    "image": "nfts/Epic/image_01.jpg",
+    "attributes": {
+      "power": 92,
+      "speed": 88,
+      "element": "Earth"
+    }
+  },
+  {
+    "id": "NFT_EPIC_002",
+    "name": "Inferno Hydra",
+    "rarity": "Epic",
+    "type": "Creature",
+    "image": "nfts/Epic/image_02.jpg",
+    "attributes": {
+      "power": 95,
+      "speed": 85,
+      "element": "Fire"
+    }
+  },
+  {
+    "id": "NFT_EPIC_003",
+    "name": "Frozen Titan",
+    "rarity": "Epic",
+    "type": "Creature",
+    "image": "nfts/Epic/image_03.jpg",
+    "attributes": {
+      "power": 98,
+      "speed": 80,
+      "element": "Ice"
+    }
+  },
+  {
+    "id": "NFT_EPIC_004",
+    "name": "Tempest Wyrm",
+    "rarity": "Epic",
+    "type": "Creature",
+    "image": "nfts/Epic/image_04.jpg",
+    "attributes": {
+      "power": 93,
+      "speed": 90,
+      "element": "Storm"
+    }
+  },
+  {
+    "id": "NFT_EPIC_005",
+    "name": "Deep Sea Leviathan",
+    "rarity": "Epic",
+    "type": "Creature",
+    "image": "nfts/Epic/image_05.jpg",
+    "attributes": {
+      "power": 94,
+      "speed": 87,
+      "element": "Water"
+    }
+  },
+  {
+    "id": "NFT_EPIC_006",
+    "name": "Shadow Emperor",
+    "rarity": "Epic",
+    "type": "Creature",
+    "image": "nfts/Epic/image_06.jpg",
+    "attributes": {
+      "power": 96,
+      "speed": 89,
+      "element": "Dark"
+    }
+  },
+  {
+    "id": "NFT_EPIC_007",
+    "name": "Radiant Seraphim",
+    "rarity": "Epic",
+    "type": "Creature",
+    "image": "nfts/Epic/image_07.jpg",
+    "attributes": {
+      "power": 91,
+      "speed": 92,
+      "element": "Light"
+    }
+  },
+  {
+    "id": "NFT_EPIC_008",
+    "name": "Chaos Chimera",
+    "rarity": "Epic",
+    "type": "Creature",
+    "image": "nfts/Epic/image_08.jpg",
+    "attributes": {
+      "power": 97,
+      "speed": 86,
+      "element": "Chaos"
+    }
+  },
+  {
+    "id": "NFT_EPIC_009",
+    "name": "Primal Behemoth",
+    "rarity": "Epic",
+    "type": "Creature",
+    "image": "nfts/Epic/image_09.jpg",
+    "attributes": {
+      "power": 99,
+      "speed": 83,
+      "element": "Nature"
+    }
+  },
+  {
+    "id": "NFT_EPIC_010",
+    "name": "Thunder God",
+    "rarity": "Epic",
+    "type": "Creature",
+    "image": "nfts/Epic/image_10.jpg",
+    "attributes": {
+      "power": 94,
+      "speed": 91,
+      "element": "Thunder"
+    }
+  },
+  {
+    "id": "NFT_LEGENDARY_001",
+    "name": "Stormweaver Dragon",
+    "rarity": "Legendary",
+    "type": "Creature",
+    "image": "nfts/Legendary/image_01.jpg",
+    "attributes": {
+      "power": 100,
+      "speed": 98,
+      "element": "Storm"
+    }
+  },
+  {
+    "id": "NFT_LEGENDARY_002",
+    "name": "Celestial Phoenix",
+    "rarity": "Legendary",
+    "type": "Creature",
+    "image": "nfts/Legendary/image_02.jpg",
+    "attributes": {
+      "power": 99,
+      "speed": 100,
+      "element": "Divine"
+    }
+  },
+  {
+    "id": "NFT_LEGENDARY_003",
+    "name": "Void Dragon Emperor",
+    "rarity": "Legendary",
+    "type": "Creature",
+    "image": "nfts/Legendary/image_03.jpg",
+    "attributes": {
+      "power": 105,
+      "speed": 95,
+      "element": "Void"
+    }
+  },
+  {
+    "id": "NFT_LEGENDARY_004",
+    "name": "Eternal Flame Sovereign",
+    "rarity": "Legendary",
+    "type": "Creature",
+    "image": "nfts/Legendary/image_04.jpg",
+    "attributes": {
+      "power": 103,
+      "speed": 97,
+      "element": "Inferno"
+    }
+  },
+  {
+    "id": "NFT_LEGENDARY_005",
+    "name": "Absolute Zero Guardian",
+    "rarity": "Legendary",
+    "type": "Creature",
+    "image": "nfts/Legendary/image_05.jpg",
+    "attributes": {
+      "power": 108,
+      "speed": 92,
+      "element": "Ice"
+    }
+  },
+  {
+    "id": "NFT_LEGENDARY_006",
+    "name": "World Eater Leviathan",
+    "rarity": "Legendary",
+    "type": "Creature",
+    "image": "nfts/Legendary/image_06.jpg",
+    "attributes": {
+      "power": 110,
+      "speed": 90,
+      "element": "Abyss"
+    }
+  },
+  {
+    "id": "NFT_LEGENDARY_007",
+    "name": "Genesis Creator",
+    "rarity": "Legendary",
+    "type": "Creature",
+    "image": "nfts/Legendary/image_07.jpg",
+    "attributes": {
+      "power": 102,
+      "speed": 99,
+      "element": "Creation"
+    }
+  },
+  {
+    "id": "NFT_LEGENDARY_008",
+    "name": "Apocalypse Herald",
+    "rarity": "Legendary",
+    "type": "Creature",
+    "image": "nfts/Legendary/image_08.jpg",
+    "attributes": {
+      "power": 106,
+      "speed": 96,
+      "element": "Destruction"
+    }
+  },
+  {
+    "id": "NFT_LEGENDARY_009",
+    "name": "Time Keeper Chronos",
+    "rarity": "Legendary",
+    "type": "Creature",
+    "image": "nfts/Legendary/image_09.jpg",
+    "attributes": {
+      "power": 101,
+      "speed": 101,
+      "element": "Time"
+    }
+  },
+  {
+    "id": "NFT_LEGENDARY_010",
+    "name": "Cosmic Sovereign",
+    "rarity": "Legendary",
+    "type": "Creature",
+    "image": "nfts/Legendary/image_10.jpg",
+    "attributes": {
+      "power": 112,
+      "speed": 94,
+      "element": "Cosmos"
+    }
+  }
+]

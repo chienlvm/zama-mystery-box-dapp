@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Golden Dragon",
+    "rarity": "Legendary",
+    "type": "Creature",
+    "image": "https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=400&h=400&fit=crop",
+    "description": "A majestic golden dragon with immense power"
+  },
+  {
+    "id": 2,
+    "name": "Crystal Sword",
+    "rarity": "Epic",
+    "type": "Weapon",
+    "image": "https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=400&h=400&fit=crop",
+    "description": "A legendary blade forged from pure crystal"
+  },
+  {
+    "id": 3,
+    "name": "Magic Shield",
+    "rarity": "Rare",
+    "type": "Armor",
+    "image": "https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=400&h=400&fit=crop",
+    "description": "An enchanted shield that deflects dark magic"
+  },
+  {
+    "id": 4,
+    "name": "Silver Coin",
+    "rarity": "Uncommon",
+    "type": "Currency",
+    "image": "https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=400&h=400&fit=crop",
+    "description": "Ancient silver coin with mysterious markings"
+  },
+  {
+    "id": 5,
+    "name": "Bronze Ring",
+    "rarity": "Common",
+    "type": "Accessory",
+    "image": "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop",
+    "description": "A simple bronze ring with minor enchantments"
+  },
+  {
+    "id": 6,
+    "name": "Diamond Crown",
+    "rarity": "Legendary",
+    "type": "Accessory",
+    "image": "https://images.unsplash.com/photo-1611955167811-4711904bb9f8?w=400&h=400&fit=crop",
+    "description": "Crown of the ancient kings, radiating divine power"
+  }
+]

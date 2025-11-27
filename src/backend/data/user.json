@@ -1,0 +1,18 @@
+{
+  "wallet": "0x12ab...cd89",
+  "fullWallet": "0x12ab34cd56ef78gh90ij12kl34mn56op78qr90st",
+  "balance": 420,
+  "currency": "ZAMA",
+  "unopenedBoxes": 3,
+  "totalNFTs": 8,
+  "joinedDate": "2025-10-15T08:30:00Z",
+  "lastActive": "2025-11-17T14:22:00Z",
+  "stats": {
+    "totalBoxesOpened": 15,
+    "legendaryCount": 2,
+    "epicCount": 2,
+    "rareCount": 3,
+    "uncommonCount": 1,
+    "commonCount": 0
+  }
+}

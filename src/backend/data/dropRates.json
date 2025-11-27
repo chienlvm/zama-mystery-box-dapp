@@ -1,0 +1,27 @@
+{
+  "Common": {
+    "bronze": 60,
+    "silver": 30,
+    "gold": 10
+  },
+  "Uncommon": {
+    "bronze": 30,
+    "silver": 35,
+    "gold": 15
+  },
+  "Rare": {
+    "bronze": 8,
+    "silver": 25,
+    "gold": 30
+  },
+  "Epic": {
+    "bronze": 2,
+    "silver": 8,
+    "gold": 30
+  },
+  "Legendary": {
+    "bronze": 0,
+    "silver": 2,
+    "gold": 15
+  }
+}

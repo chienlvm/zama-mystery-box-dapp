@@ -84,7 +84,7 @@ export const Web3AuthProvider = ({ children }: { children: any }) => {
 
       // 3. Connect to MetaMask and sign message
       if (!window.ethereum) {
-        throw new Error('Vui lòng cài đặt MetaMask');
+        throw new Error('Please install MetaMask');
       }
 
       console.log('🔌 Kết nối MetaMask...');

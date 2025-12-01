@@ -4,8 +4,10 @@ import { CollectionPage } from './components/CollectionPage';
 import { Web3AuthProvider } from './contexts/Web3AuthContext';
 import { Web3AuthHeader } from './components/Web3AuthHeader';
 
-// API Base URL
-export const API_BASE = 'http://localhost:3001/api';
+// API Base URL - auto-detect environment
+export const API_BASE = import.meta.env.PROD 
+  ? 'https://chienlvm.network/api'
+  : 'http://localhost:3001/api';
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<'home' | 'collection'>('home');

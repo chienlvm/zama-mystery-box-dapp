@@ -208,6 +208,7 @@ export function HomePage() {
   const pollForNFTResult = async (purchaseId: string) => {
     const maxAttempts = 60; // 2 minutes
     const pollInterval = 2000; // 2 seconds
+    let nftFound = false;
 
     console.log(`📊 Starting to poll purchase ${purchaseId}...`);
 
@@ -231,6 +232,7 @@ export function HomePage() {
           // Check if NFT is revealed
           if (state === 'Fulfilled' && nft) {
             console.log('🎉 NFT revealed!', nft);
+            nftFound = true;
 
             setOpenedNFT({
               id: nft.tokenId,
@@ -242,15 +244,15 @@ export function HomePage() {
             });
 
             // Show animation with congratulations message
-            setPurchaseStatus(`🎉 BoxOpeningAnimation appears - NFT data available!`);
+            setPurchaseStatus(`🎉 Congratulations! You got a ${nft.rarity || 'Common'} NFT!`);
             setShowAnimation(true);
 
-            // Hide animation after 5 seconds
+            // Hide animation after 8 seconds
             setTimeout(() => {
               setShowAnimation(false);
               setPurchaseStatus('');
               setOpenedNFT(null);
-            }, 5000);
+            }, 8000);
 
             break;
           }
@@ -260,8 +262,8 @@ export function HomePage() {
       }
     }
 
-    // Timeout
-    if (openedNFT === null) {
+    // Timeout - only show if no NFT was found
+    if (!nftFound) {
       setPurchaseStatus('⏱️ Still processing... Check your collection later.');
       setTimeout(() => {
         setShowAnimation(false);

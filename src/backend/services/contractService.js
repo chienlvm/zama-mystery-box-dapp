@@ -9,12 +9,17 @@
 const { ethers } = require('ethers');
 const fs = require('fs');
 const path = require('path');
+const RPCManager = require('../scripts/rpcManager');
 
 class ContractService {
   constructor() {
-    // Connect to Sepolia via RPC
-    const rpcUrl = process.env.SEPOLIA_RPC_URL || 'https://sepolia.infura.io/v3/c25f6035d0984e15a846bb787a238bac';
-    this.provider = new ethers.JsonRpcProvider(rpcUrl);
+    // Initialize RPC Manager with automatic failover
+    this.rpcManager = new RPCManager();
+    const providerInfo = this.rpcManager.createProvider();
+    this.provider = providerInfo.provider;
+    this.currentEndpoint = providerInfo.endpoint;
+    
+    console.log('🔌 ContractService using:', this.currentEndpoint.name);
     
     // Load deployed contract addresses
     const deploymentsPath = path.join(__dirname, '..', 'deployments.json');
@@ -50,11 +55,62 @@ class ContractService {
   }
 
   /**
+   * Recreate provider on failover
+   */
+  async recreateProvider() {
+    console.log('🔄 Recreating provider...');
+    
+    if (this.provider && this.provider.destroy) {
+      try {
+        await this.provider.destroy();
+      } catch (e) {
+        // Ignore cleanup errors
+      }
+    }
+    
+    const providerInfo = this.rpcManager.createProvider();
+    this.provider = providerInfo.provider;
+    this.currentEndpoint = providerInfo.endpoint;
+    
+    // Recreate contract instances
+    this.boxContract = new ethers.Contract(this.BOX_ADDRESS, this.boxContract.interface, this.provider);
+    this.nftContract = new ethers.Contract(this.NFT_ADDRESS, this.nftContract.interface, this.provider);
+    
+    console.log(`✅ Switched to ${this.currentEndpoint.name}`);
+  }
+
+  /**
+   * Wrap contract calls with automatic failover
+   */
+  async callWithFailover(callFn, context = '') {
+    try {
+      return await this.rpcManager.callWithFailover(callFn);
+    } catch (error) {
+      if (this.rpcManager.isRateLimitError(error) || this.rpcManager.isFilterError(error)) {
+        console.log(`⚠️  ${context}: Provider error, attempting failover...`);
+        this.rpcManager.markFailed(this.currentEndpoint.url, error);
+        await this.recreateProvider();
+        
+        try {
+          return await callFn();
+        } catch (retryError) {
+          console.error(`❌ ${context}: Retry failed:`, retryError.message);
+          throw retryError;
+        }
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Get box configuration from contract
    */
   async getBoxConfig(boxId) {
     try {
-      const config = await this.boxContract.boxes(boxId);
+      const config = await this.callWithFailover(
+        () => this.boxContract.boxes(boxId),
+        `getBoxConfig(${boxId})`
+      );
       
       return {
         id: boxId,
@@ -92,7 +148,10 @@ class ContractService {
    */
   async getPurchase(purchaseId) {
     try {
-      const purchase = await this.boxContract.purchases(purchaseId);
+      const purchase = await this.callWithFailover(
+        () => this.boxContract.purchases(purchaseId),
+        `getPurchase(${purchaseId})`
+      );
       
       return {
         purchaseId: Number(purchaseId),
@@ -116,8 +175,14 @@ class ContractService {
    */
   async getNFT(tokenId) {
     try {
-      const owner = await this.nftContract.ownerOf(tokenId);
-      const tokenURI = await this.nftContract.tokenURI(tokenId);
+      const owner = await this.callWithFailover(
+        () => this.nftContract.ownerOf(tokenId),
+        `getNFT.ownerOf(${tokenId})`
+      );
+      const tokenURI = await this.callWithFailover(
+        () => this.nftContract.tokenURI(tokenId),
+        `getNFT.tokenURI(${tokenId})`
+      );
       
       return {
         tokenId: Number(tokenId),
@@ -132,11 +197,14 @@ class ContractService {
   }
 
   /**
-   * Get user's NFT balance
+   * Get user\'s NFT balance
    */
   async getUserNFTCount(userAddress) {
     try {
-      const balance = await this.nftContract.balanceOf(userAddress);
+      const balance = await this.callWithFailover(
+        () => this.nftContract.balanceOf(userAddress),
+        `getUserNFTCount(${userAddress})`
+      );
       return Number(balance);
     } catch (error) {
       console.error('❌ Error fetching NFT balance:', error.message);
@@ -155,7 +223,10 @@ class ContractService {
       
       for (let tokenId = 1; tokenId <= maxTokenId; tokenId++) {
         try {
-          const owner = await this.nftContract.ownerOf(tokenId);
+          const owner = await this.callWithFailover(
+            () => this.nftContract.ownerOf(tokenId),
+            `getUserNFTs.ownerOf(${tokenId})`
+          );
           
           if (owner.toLowerCase() === userAddress.toLowerCase()) {
             const nft = await this.getNFT(tokenId);
@@ -175,11 +246,14 @@ class ContractService {
   }
 
   /**
-   * Get user's ETH balance
+   * Get user\'s ETH balance
    */
   async getUserBalance(userAddress) {
     try {
-      const balance = await this.provider.getBalance(userAddress);
+      const balance = await this.callWithFailover(
+        () => this.provider.getBalance(userAddress),
+        `getUserBalance(${userAddress})`
+      );
       return ethers.formatEther(balance);
     } catch (error) {
       console.error('❌ Error fetching balance:', error.message);

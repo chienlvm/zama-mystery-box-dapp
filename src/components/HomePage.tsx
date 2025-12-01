@@ -71,7 +71,7 @@ export function HomePage() {
 
   // Contract integration following Zama FHE documentation
   // Reference: https://docs.zama.org/protocol/relayer-sdk-guides/development-guide/webapp
-  const CONTRACT_ADDRESS = import.meta.env.VITE_BOX_ADDRESS || '0x3f3DaA5031cd3B9e69051a163b658585c99123f2';
+  const CONTRACT_ADDRESS = import.meta.env.VITE_BOX_ADDRESS;
   const {
     fheReady,
     buyAndOpenWithUserSeed,

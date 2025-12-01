@@ -5,7 +5,7 @@ import { Web3AuthProvider } from './contexts/Web3AuthContext';
 import { Web3AuthHeader } from './components/Web3AuthHeader';
 
 // API Base URL
-export const API_BASE = 'https://chienlvm.network/api';
+export const API_BASE = 'http://localhost:3001/api';
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<'home' | 'collection'>('home');

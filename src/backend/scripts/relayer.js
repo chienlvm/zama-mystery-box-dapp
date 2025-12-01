@@ -3,27 +3,25 @@ require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 const { ethers } = require("ethers");
 const fs = require("fs");
 
-// Import NFT services
+// Import services
 const { generateNFTForMinting } = require('../services/nftService');
 const nftDB = require('../services/nftDatabase');
+const RPCManager = require('./rpcManager');
 
 // ============================================================================
-// RELAYER V3: Following Zama Official Documentation
+// RELAYER V4: Multi-RPC with Load Balancing
 // Reference: https://docs.zama.org/protocol/relayer-sdk-guides/development-guide
 // ============================================================================
 
 console.log("\n" + "=".repeat(70));
-console.log("🚀 Mystery Box Relayer Service v3");
-console.log("📖 Implementation Guide: https://docs.zama.org/protocol/relayer-sdk-guides");
+console.log("🚀 Mystery Box Relayer Service v4");
+console.log("📖 Multi-RPC Load Balancing with Automatic Failover");
 console.log("=".repeat(70) + "\n");
 
-// Validate required environment variables
-const RPC = process.env.SEPOLIA_RPC_URL;
-if (!RPC) {
-    console.error("❌ Missing SEPOLIA_RPC_URL in .env");
-    process.exit(1);
-}
+// Initialize RPC Manager
+const rpcManager = new RPCManager();
 
+// Validate required environment variables
 const relayerKey = process.env.RELAYER_PRIVATE_KEY;
 if (!relayerKey) {
     console.error("❌ Missing RELAYER_PRIVATE_KEY in .env");
@@ -31,14 +29,46 @@ if (!relayerKey) {
     process.exit(1);
 }
 
-// Initialize provider and wallet
-const provider = new ethers.JsonRpcProvider(RPC);
+// Create initial provider
+let providerInfo = rpcManager.createProvider();
+let provider = providerInfo.provider;
+let currentEndpoint = providerInfo.endpoint;
+
 const wallet = new ethers.Wallet(relayerKey, provider);
 const relayerAddress = wallet.address;
 
 console.log("🔧 Relayer Configuration:");
-console.log("   RPC:", RPC);
+console.log("   Provider Type:", providerInfo.type);
+console.log("   Current Endpoint:", currentEndpoint.name);
 console.log("   Relayer Address:", relayerAddress);
+
+// Function to recreate provider on failover
+async function recreateProvider() {
+    console.log('🔄 Recreating provider...');
+    
+    // Cleanup old provider
+    if (provider && provider.destroy) {
+        try {
+            await provider.destroy();
+        } catch (e) {
+            // Ignore cleanup errors
+        }
+    }
+    
+    // Create new provider
+    providerInfo = rpcManager.createProvider();
+    provider = providerInfo.provider;
+    currentEndpoint = providerInfo.endpoint;
+    
+    // Update wallet connection
+    wallet.provider = provider;
+    
+    // Recreate contract instances
+    box = new ethers.Contract(BOX_ADDRESS, abi, wallet);
+    
+    console.log(`✅ Switched to ${currentEndpoint.name}`);
+    return provider;
+}
 
 // Load contract address
 const deploymentsPath = path.resolve(__dirname, '..', 'deployments.json');
@@ -62,7 +92,7 @@ console.log("   Box Contract:", BOX_ADDRESS);
 
 // Load contract ABI and create contract instance
 const abi = require("../artifacts/contracts/MysteryBox.sol/MysteryBox.json").abi;
-const box = new ethers.Contract(BOX_ADDRESS, abi, wallet);
+let box = new ethers.Contract(BOX_ADDRESS, abi, wallet);
 
 // Global relayer SDK instance
 let fheInstance;
@@ -74,6 +104,29 @@ const processingPurchases = new Set();
 // Nonce management to prevent "already known" errors
 let currentNonce = null;
 const nonceLock = { locked: false, queue: [] };
+
+// Wrap provider calls with automatic failover
+async function safeProviderCall(callFn, context = '') {
+    try {
+        return await rpcManager.callWithFailover(callFn);
+    } catch (error) {
+        // Check if we should switch provider
+        if (rpcManager.isRateLimitError(error) || rpcManager.isFilterError(error)) {
+            console.log(`⚠️  ${context}: Provider error, attempting failover...`);
+            rpcManager.markFailed(currentEndpoint.url, error);
+            await recreateProvider();
+            
+            // Retry once with new provider
+            try {
+                return await callFn();
+            } catch (retryError) {
+                console.error(`❌ ${context}: Retry failed:`, retryError.message);
+                throw retryError;
+            }
+        }
+        throw error;
+    }
+}
 
 async function getNextNonce() {
     // Wait if locked
@@ -117,13 +170,13 @@ async function initializeRelayerSDK() {
         const relayerSdk = await import(pathToFileURL(sdkPath).href);
         const { createInstance, SepoliaConfig } = relayerSdk;
 
-        // Step 2: Configure for Sepolia testnet
+        // Step 2: Configure for Sepolia testnet - use current endpoint
         const relayerUrl = process.env.RELAYER_URL || 'http://relayer.testnet.zama.org/';
         SepoliaConfig.relayerUrl = relayerUrl;
-        SepoliaConfig.network = RPC;
+        SepoliaConfig.network = currentEndpoint.url; // Use current RPC endpoint
 
         console.log("   Relayer URL:", relayerUrl);
-        console.log("   Network RPC:", RPC);
+        console.log("   Network RPC:", currentEndpoint.name);
 
         // Step 3: Create FHE instance
         console.log("   Creating FHE instance...");
@@ -183,21 +236,26 @@ async function handleBoxPurchased(purchaseId) {
         console.log("   Encrypting input...");
         const encryptedInput = await inputBuffer.encrypt();
         console.log("   ✅ Encrypted input created");
+        console.log("   Encrypted input keys:", Object.keys(encryptedInput));
         
         // Step 3: Extract handle and proof
-        // handles[0] is Uint8Array(32) -> convert to hex bytes32 for externalEuint32
-        // inputProof is Uint8Array -> convert to hex bytes
+        // According to Zama SDK: encryptedInput contains { handles, inputProof }
+        // handles[0] is the bytes32 handle that represents the encrypted value
+        // For externalEuint32 in Solidity, we pass the handle (bytes32) + inputProof (bytes)
         const handleBytes = encryptedInput.handles[0];
-        const proofBytes = encryptedInput.inputProof;
+        const inputProofBytes = encryptedInput.inputProof;
         
-        const handle = ethers.hexlify(handleBytes);  // Convert to "0x..." hex string
-        const inputProof = ethers.hexlify(proofBytes);
+        // Convert to hex for contract call
+        const handle = ethers.hexlify(handleBytes);
+        const inputProof = ethers.hexlify(inputProofBytes);
         
         console.log("   Handle (bytes32):", handle);
+        console.log("   Handle length:", handle.length, "chars");
         console.log("   InputProof length:", inputProof.length, "chars");
         
         // Step 4: Call openBox on contract
-        // Reference: MysteryBox.sol - openBox(uint256 purchaseId, bytes calldata encryptedRandomSeed, bytes calldata inputProof)
+        // Reference: MysteryBox.sol - openBox(uint256 purchaseId, externalEuint32 encryptedRandom, bytes calldata inputProof)
+        // externalEuint32 is actually a bytes32 handle in the SDK
         console.log(`   Calling openBox(${purchaseId}, handle, inputProof)...`);
         
         try {
@@ -224,16 +282,20 @@ async function handleBoxPurchased(purchaseId) {
         // Send actual transaction with proper nonce and gas management
         console.log("   Preparing transaction with current nonce...");
         const txNonce = await getNextNonce();
-        const feeData = await provider.getFeeData();
+        
+        const feeData = await safeProviderCall(
+            () => provider.getFeeData(),
+            'Getting fee data'
+        );
         
         const txOptions = {
             nonce: txNonce,
             maxFeePerGas: feeData.maxFeePerGas ? feeData.maxFeePerGas * 120n / 100n : undefined, // +20%
             maxPriorityFeePerGas: feeData.maxPriorityFeePerGas ? feeData.maxPriorityFeePerGas * 120n / 100n : undefined, // +20%
-            gasLimit: 500000n
+            gasLimit: 2000000n  // Increased gas limit for FHE operations
         };
         
-        console.log(`   Nonce: ${txNonce}, Gas: ${txOptions.maxFeePerGas ? (Number(txOptions.maxFeePerGas) / 1e9).toFixed(2) + ' Gwei' : 'auto'}`);
+        console.log(`   Nonce: ${txNonce}, Gas limit: ${txOptions.gasLimit}, Fee: ${txOptions.maxFeePerGas ? (Number(txOptions.maxFeePerGas) / 1e9).toFixed(2) + ' Gwei' : 'auto'}`);
         
         const tx = await box.openBox(purchaseId, handle, inputProof, txOptions);
         console.log(`   Transaction sent: ${tx.hash}`);
@@ -249,6 +311,13 @@ async function handleBoxPurchased(purchaseId) {
     } catch (error) {
         console.error(`\n❌ Error handling BoxPurchased:`, error.message);
         console.error("   Purchase ID:", purchaseId);
+        
+        // Check for rate limit and switch provider if needed
+        if (rpcManager.isRateLimitError(error)) {
+            console.log('⚠️  Rate limit detected, marking endpoint as failed...');
+            rpcManager.markFailed(currentEndpoint.url, error);
+        }
+        
         if (error.stack) console.error("   Stack:", error.stack);
         
         // Remove from processing so it can be retried
@@ -366,7 +435,11 @@ async function handleBoxOpened(purchaseId, encryptedIndexHandle) {
         // Send transaction with proper nonce and gas management
         console.log("   Preparing transaction with current nonce...");
         const fulfillNonce = await getNextNonce();
-        const feeData = await provider.getFeeData();
+        
+        const feeData = await safeProviderCall(
+            () => provider.getFeeData(),
+            'Getting fee data for fulfillment'
+        );
         
         const txOptions = {
             nonce: fulfillNonce,
@@ -539,6 +612,13 @@ async function handleBoxOpened(purchaseId, encryptedIndexHandle) {
         console.error(`\n❌ Error handling BoxOpened:`, error.message);
         console.error("   Purchase ID:", purchaseId);
         console.error("   Handle:", encryptedIndexHandle);
+        
+        // Check for rate limit and switch provider if needed
+        if (rpcManager.isRateLimitError(error)) {
+            console.log('⚠️  Rate limit detected in BoxOpened handler...');
+            rpcManager.markFailed(currentEndpoint.url, error);
+        }
+        
         if (error.stack) console.error("   Stack:", error.stack);
         
         // Remove from processing so it can be retried
@@ -587,11 +667,35 @@ async function start() {
     });
     
     console.log("✅ Event listeners registered");
+    
+    // Display RPC health status
+    console.log("\n📊 RPC Endpoints Status:");
+    const healthStatus = rpcManager.getHealthStatus();
+    healthStatus.forEach((ep, i) => {
+        const status = ep.healthy ? '✅' : '❌';
+        const cooldown = ep.cooldownRemaining > 0 ? ` (cooldown: ${Math.round(ep.cooldownRemaining/1000)}s)` : '';
+        console.log(`   ${i + 1}. ${status} ${ep.name} (${ep.type})${cooldown}`);
+    });
+    
     console.log("\n" + "=".repeat(70));
     console.log("✅ Relayer is now running and listening for events...");
     console.log("   📖 Documentation: https://docs.zama.org/protocol/relayer-sdk-guides");
+    console.log("   🔄 Automatic failover: Enabled");
+    console.log("   ⚡ Current endpoint:", currentEndpoint.name);
     console.log("   Press Ctrl+C to stop");
     console.log("=".repeat(70) + "\n");
+    
+    // Periodic health status display (every 5 minutes)
+    setInterval(() => {
+        console.log("\n📊 RPC Health Update:");
+        const status = rpcManager.getHealthStatus();
+        status.forEach((ep, i) => {
+            if (!ep.healthy) {
+                console.log(`   ⚠️  ${ep.name}: ${ep.failures} failures`);
+            }
+        });
+        console.log(`   ✅ Current: ${currentEndpoint.name}\n`);
+    }, 300000); // 5 minutes
     
     // Keep process alive
     await new Promise(() => {});
